@@ -21,13 +21,15 @@ export function EntryForm({ children, submitLabel, onSubmit }) {
   return (
     <form className="entry-form" onSubmit={handleSubmit}>
       {children}
-      <motion.button
-        className="btn"
-        whileTap={{ scale: 0.95 }}
-        animate={{ backgroundColor: justSaved ? 'var(--ok)' : 'var(--accent)' }}
-      >
-        {justSaved ? '✓ Готово' : submitLabel}
-      </motion.button>
+      <div className="entry-form__actions">
+        <motion.button
+          className="btn"
+          whileTap={{ scale: 0.95 }}
+          animate={{ backgroundColor: justSaved ? 'var(--ok)' : 'var(--accent)' }}
+        >
+          {justSaved ? '✓ Готово' : submitLabel}
+        </motion.button>
+      </div>
     </form>
   );
 }
