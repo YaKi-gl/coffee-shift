@@ -1,0 +1,210 @@
+/* Компоненты интерфейса */
+
+/* --- Индикатор хранилища --- */
+.storage-badge {
+  font: 12px var(--f-mono);
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+/* --- Вкладки --- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+
+.tabs__tab {
+  background: none;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  padding: 10px 14px;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tabs__tab[aria-selected="true"] {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+/* --- Панель --- */
+.panel {
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+}
+
+/* --- KPI --- */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.kpi {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.kpi__label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.kpi__value {
+  display: block;
+  font: 600 24px var(--f-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi__hint {
+  color: var(--muted);
+}
+
+.kpi__hint--up   { color: var(--ok); }
+.kpi__hint--down { color: var(--bad); }
+
+/* --- График выручки --- */
+.chart {
+  overflow-x: auto;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  min-width: 480px;
+  height: auto;
+}
+
+.chart text {
+  fill: var(--muted);
+  font: 11px var(--f-mono);
+}
+
+.chart__grid  { stroke: var(--line); }
+.chart__bar   { fill: var(--crema); opacity: 0.75; }
+.chart__bar--last { fill: var(--accent); opacity: 1; }
+
+/* --- Списания по причинам --- */
+.reasons {
+  display: grid;
+  gap: 8px;
+}
+
+.reason {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  font-size: 14px;
+}
+
+.reason__sum {
+  font: 600 13px var(--f-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.reason__bar {
+  grid-column: 1 / -1;
+  height: 8px;
+  background: var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.reason__fill {
+  display: block;
+  height: 100%;
+  background: var(--crema);
+}
+
+/* --- Формы ввода --- */
+.entry-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.entry-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- Недельный график смен --- */
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.day {
+  min-height: 120px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+
+.day--today {
+  border-color: var(--accent);
+}
+
+.day__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.shift {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.shift__time {
+  font: 12px var(--f-mono);
+  color: var(--muted);
+}
+
+/* --- Прочее --- */
+.tag {
+  font: 600 11px var(--f-mono);
+  background: var(--crema-soft);
+  color: var(--crema);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 24px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}

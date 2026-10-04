@@ -1,0 +1,57 @@
+/* Дизайн-токены: цвета, шрифты. Светлая тема по умолчанию, тёмная — по системной настройке */
+
+:root {
+  --bg: #f3f5f3;
+  --panel: #ffffff;
+  --ink: #23191a;
+  --muted: #6d6466;
+  --line: #dcdfdc;
+  --accent: #0f6f68;      /* бирюзовый: действия, текущий день */
+  --accent-soft: #dcefed;
+  --crema: #b86a1e;       /* «крема»: данные о кофе и деньгах */
+  --crema-soft: #f6e6d4;
+  --ok: #1f7a4d;
+  --bad: #b3261e;
+  --bad-soft: #fbe3e1;
+
+  --f-display: "Yeseva One", Georgia, serif;
+  --f-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --radius: 10px;
+  --radius-lg: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141112;
+    --panel: #1e1a1b;
+    --ink: #efe8e6;
+    --muted: #a59c9d;
+    --line: #342d2e;
+    --accent: #5cc8bd;
+    --accent-soft: #1a3432;
+    --crema: #e5a15c;
+    --crema-soft: #3a2a19;
+    --ok: #6fd3a0;
+    --bad: #ff8c84;
+    --bad-soft: #3a1c1a;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #141112;
+  --panel: #1e1a1b;
+  --ink: #efe8e6;
+  --muted: #a59c9d;
+  --line: #342d2e;
+  --accent: #5cc8bd;
+  --accent-soft: #1a3432;
+  --crema: #e5a15c;
+  --crema-soft: #3a2a19;
+  --ok: #6fd3a0;
+  --bad: #ff8c84;
+  --bad-soft: #3a1c1a;
+  color-scheme: dark;
+}
