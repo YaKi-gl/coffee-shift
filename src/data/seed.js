@@ -23,7 +23,11 @@ function seedRevenue(today) {
     // Плавный рост выручки и среднего чека + детерминированный «шум»
     const revenue = 36000 + i * 600 + ((daysAgo * 7919) % 5000);
     const checks = Math.round(revenue / (280 + i * 2.3));
-    return { id: `day-${date}`, date, revenue, checks, example: true };
+    // Безнал ≈ 62–72% выручки, возвратов 0–2 в день
+    const card = Math.round((revenue * (62 + ((daysAgo * 37) % 11))) / 100);
+    const cash = revenue - card;
+    const refunds = (daysAgo * 5) % 3;
+    return { id: `day-${date}`, date, cash, card, revenue, checks, refunds, example: true };
   });
 }
 

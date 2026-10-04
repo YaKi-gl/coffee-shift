@@ -7,8 +7,20 @@
 /* --- KPI --- */
 .kpis {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 6 показателей — ровная сетка 3 × 2 */
   gap: 12px;
+}
+
+@media (max-width: 820px) {
+  .kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .kpi {
@@ -56,8 +68,27 @@
 }
 
 .chart__grid  { stroke: var(--line); }
-.chart__bar   { fill: var(--crema); opacity: 0.75; }
-.chart__bar--last { fill: var(--accent); opacity: 1; }
+.chart__bar--card { fill: var(--accent); }
+.chart__bar--cash { fill: var(--crema); }
+
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chart-legend__dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 4px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+
+.chart-legend__dot--card { background: var(--accent); }
+.chart-legend__dot--cash { background: var(--crema); }
 
 /* --- Списания по причинам --- */
 .reasons {

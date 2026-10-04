@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { averageCheck } from '../../services/metrics.js';
+import { useState } from 'react';
+import { averageCheck, revenueOf } from '../../services/metrics.js';
 import { formatDay, formatWeekday, todayIso } from '../../utils/date.js';
 import { formatRub } from '../../utils/format.js';
 import { rowMotion } from '../motion/rowMotion.js';
@@ -8,26 +9,61 @@ import { EmptyState } from '../ui/EmptyState.jsx';
 import { EntryForm, Field } from '../ui/EntryForm.jsx';
 import { Panel } from '../ui/Panel.jsx';
 import { RemoveButton } from '../ui/RemoveButton.jsx';
+import './Revenue.css';
 
-/** Вкладка «Выручка»: ввод за день и таблица со средним чеком. */
+const money = (value) => (value === undefined ? '—' : formatRub(Number(value) || 0));
+
+/** Итог дня считается на лету, пока вводятся наличные и безнал. */
+function LiveTotal({ cash, card }) {
+  const total = (Number(cash) || 0) + (Number(card) || 0);
+  return (
+    <div className="revenue-total" aria-live="polite">
+      <span className="revenue-total__label">Выручка за день</span>
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.b key={total} className="revenue-total__value" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }}>
+          {formatRub(total)}
+        </motion.b>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/** Вкладка «Выручка»: наличные, безнал, чеки и возвраты за день. */
 export function RevenueView({ days, onSave, onRemove }) {
   const rows = [...days].sort((a, b) => b.date.localeCompare(a.date));
+  const [draft, setDraft] = useState({ cash: '', card: '' });
+
+  const track = (field) => (e) => setDraft((d) => ({ ...d, [field]: e.target.value }));
+
+  function handleSave(values) {
+    onSave(values);
+    setDraft({ cash: '', card: '' });
+  }
 
   return (
     <motion.div variants={staggerContainer()} initial="hidden" animate="show">
       <Panel title="Выручка по дням">
-        <EntryForm submitLabel="Сохранить день" onSubmit={onSave}>
+        <EntryForm submitLabel="Сохранить день" onSubmit={handleSave}>
           <Field label="Дата">
             <input type="date" id="rev-date" name="date" required defaultValue={todayIso()} />
           </Field>
-          <Field label="Выручка, ₽">
-            <input type="number" id="rev-amount" name="revenue" min="0" required placeholder="42000" />
+          <Field label="Наличные, ₽">
+            <input type="number" id="rev-cash" name="cash" min="0" required placeholder="14000" onChange={track('cash')} />
           </Field>
-          <Field label="Чеков">
+          <Field label="Безнал, ₽">
+            <input type="number" id="rev-card" name="card" min="0" required placeholder="28000" onChange={track('card')} />
+          </Field>
+          <Field label="Чеков продажи">
             <input type="number" id="rev-checks" name="checks" min="0" required placeholder="140" />
           </Field>
+          <Field label="Чеков возврата">
+            <input type="number" id="rev-refunds" name="refunds" min="0" defaultValue="0" />
+          </Field>
         </EntryForm>
-        <p className="muted">Повторная запись за ту же дату заменит прежнюю.</p>
+        <div className="row row--between">
+          <p className="muted">Повторная запись за ту же дату заменит прежнюю.</p>
+          <LiveTotal cash={draft.cash} card={draft.card} />
+        </div>
 
         {rows.length ? (
           <div className="table-wrap">
@@ -35,8 +71,11 @@ export function RevenueView({ days, onSave, onRemove }) {
               <thead>
                 <tr>
                   <th>Дата</th>
+                  <th className="num">Наличные</th>
+                  <th className="num">Безнал</th>
                   <th className="num">Выручка</th>
                   <th className="num">Чеков</th>
+                  <th className="num">Возвратов</th>
                   <th className="num">Средний чек</th>
                   <th />
                 </tr>
@@ -44,12 +83,15 @@ export function RevenueView({ days, onSave, onRemove }) {
               <tbody>
                 <AnimatePresence initial={false}>
                   {rows.map((d) => (
-                    <motion.tr key={`${d.id}-${d.revenue}-${d.checks}`} {...rowMotion}>
+                    <motion.tr key={`${d.id}-${revenueOf(d)}-${d.checks}-${d.refunds}`} {...rowMotion}>
                       <td>
                         {formatWeekday(d.date)}, {formatDay(d.date)} {d.example && <span className="tag">пример</span>}
                       </td>
-                      <td className="num">{formatRub(d.revenue)}</td>
+                      <td className="num">{money(d.cash)}</td>
+                      <td className="num">{money(d.card)}</td>
+                      <td className="num revenue-cell">{formatRub(revenueOf(d))}</td>
                       <td className="num">{d.checks || 0}</td>
+                      <td className={`num ${d.refunds ? 'refund-cell' : ''}`}>{d.refunds ?? 0}</td>
                       <td className="num">{d.checks ? formatRub(averageCheck([d])) : '—'}</td>
                       <td>
                         <RemoveButton onClick={() => onRemove('days', d.id)} />

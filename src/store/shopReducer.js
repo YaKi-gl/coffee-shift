@@ -41,8 +41,18 @@ export function shopReducer(state, action) {
 
     // Выручка хранится одной записью на дату: повторный ввод заменяет прежний
     case ActionTypes.SAVE_DAY: {
-      const { date, revenue, checks } = action.day;
-      const day = { id: `day-${date}`, date, revenue: Number(revenue), checks: Number(checks) };
+      const { date } = action.day;
+      const cash = Number(action.day.cash) || 0;
+      const card = Number(action.day.card) || 0;
+      const day = {
+        id: `day-${date}`,
+        date,
+        cash,
+        card,
+        revenue: cash + card, // хранится для быстрого построения графика
+        checks: Number(action.day.checks) || 0,
+        refunds: Number(action.day.refunds) || 0,
+      };
       return withCollection(state, 'days', (list) => [...list.filter((d) => d.date !== date), day]);
     }
 

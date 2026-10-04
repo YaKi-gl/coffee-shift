@@ -21,11 +21,24 @@ describe('shopReducer', () => {
     expect(state.data.writeoffs[0].qty).toBe(2);
   });
 
+  it('выручка = наличные + безнал, возвраты сохраняются', () => {
+    const state = shopReducer(empty(), {
+      type: T.SAVE_DAY,
+      day: { date: '2026-10-01', cash: '15000', card: '27000', checks: '140', refunds: '2' },
+    });
+    const day = state.data.days[0];
+    expect(day.revenue).toBe(42000);
+    expect(day.cash).toBe(15000);
+    expect(day.card).toBe(27000);
+    expect(day.refunds).toBe(2);
+  });
+
   it('выручка за одну дату перезаписывается', () => {
-    let state = shopReducer(empty(), { type: T.SAVE_DAY, day: { date: '2026-10-01', revenue: '40000', checks: '130' } });
-    state = shopReducer(state, { type: T.SAVE_DAY, day: { date: '2026-10-01', revenue: '42000', checks: '140' } });
+    let state = shopReducer(empty(), { type: T.SAVE_DAY, day: { date: '2026-10-01', cash: '10000', card: '30000', checks: '130' } });
+    state = shopReducer(state, { type: T.SAVE_DAY, day: { date: '2026-10-01', cash: '12000', card: '30000', checks: '140' } });
     expect(state.data.days).toHaveLength(1);
     expect(state.data.days[0].revenue).toBe(42000);
+    expect(state.data.days[0].refunds).toBe(0);
   });
 
   it('удаляет запись из нужной коллекции', () => {

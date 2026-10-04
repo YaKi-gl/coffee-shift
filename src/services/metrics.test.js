@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
   averageCheck,
   averageRevenue,
+  paymentSplit,
+  refundStats,
+  revenueOf,
   inPeriod,
   percentChange,
   shiftsInWeek,
@@ -80,5 +83,32 @@ describe('shiftsInWeek', () => {
   it('берёт смены с понедельника по воскресенье', () => {
     const shifts = [{ date: '2026-09-28' }, { date: '2026-10-04' }, { date: '2026-10-05' }];
     expect(shiftsInWeek(shifts, '2026-09-28')).toHaveLength(2);
+  });
+});
+
+describe('наличные, безнал и возвраты', () => {
+  const days = [
+    { date: '2026-10-01', cash: 10000, card: 30000, checks: 100, refunds: 2 },
+    { date: '2026-10-02', cash: 15000, card: 25000, checks: 100, refunds: 1 },
+  ];
+
+  it('revenueOf складывает наличные и безнал', () => {
+    expect(revenueOf(days[0])).toBe(40000);
+  });
+
+  it('revenueOf понимает старые записи только с общей суммой', () => {
+    expect(revenueOf({ revenue: 38000 })).toBe(38000);
+  });
+
+  it('paymentSplit считает доли оплат', () => {
+    expect(paymentSplit(days)).toEqual({ cash: 25000, card: 55000, cardShare: 68.75 });
+  });
+
+  it('refundStats считает возвраты и их долю от чеков', () => {
+    expect(refundStats(days)).toEqual({ refunds: 3, refundRate: 1.5 });
+  });
+
+  it('средний чек считается от суммы наличных и безнала', () => {
+    expect(averageCheck(days)).toBe(400);
   });
 });
