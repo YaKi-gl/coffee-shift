@@ -21,13 +21,14 @@ describe('shopReducer', () => {
     expect(state.data.writeoffs[0].qty).toBe(2);
   });
 
-  it('выручка = наличные + безнал, возвраты сохраняются', () => {
+  it('выручка = наличные + безнал − сумма возвратов', () => {
     const state = shopReducer(empty(), {
       type: T.SAVE_DAY,
-      day: { date: '2026-10-01', cash: '15000', card: '27000', checks: '140', refunds: '2' },
+      day: { date: '2026-10-01', cash: '15000', card: '27000', checks: '140', refunds: '2', refundAmount: '560' },
     });
     const day = state.data.days[0];
-    expect(day.revenue).toBe(42000);
+    expect(day.revenue).toBe(41440);
+    expect(day.refundAmount).toBe(560);
     expect(day.cash).toBe(15000);
     expect(day.card).toBe(27000);
     expect(day.refunds).toBe(2);

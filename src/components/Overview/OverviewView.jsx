@@ -34,8 +34,9 @@ export function OverviewView({ data }) {
         />
         <KpiCard
           label="Возвраты за 7 дней"
-          value={refunds.refunds}
-          hint={`${refunds.refundRate.toFixed(1)}% от чеков`}
+          value={refunds.amount}
+          format={formatRub}
+          hint={`${refunds.refunds} чеков · ${refunds.amountRate.toFixed(1)}% от продаж`}
         />
         <KpiCard
           label={`Списания за ${WRITEOFF_PERIOD_DAYS} дней`}

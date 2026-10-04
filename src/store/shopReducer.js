@@ -44,14 +44,16 @@ export function shopReducer(state, action) {
       const { date } = action.day;
       const cash = Number(action.day.cash) || 0;
       const card = Number(action.day.card) || 0;
+      const refundAmount = Number(action.day.refundAmount) || 0;
       const day = {
         id: `day-${date}`,
         date,
         cash,
         card,
-        revenue: cash + card, // хранится для быстрого построения графика
+        revenue: cash + card - refundAmount, // выручка за вычетом возвратов
         checks: Number(action.day.checks) || 0,
         refunds: Number(action.day.refunds) || 0,
+        refundAmount,
       };
       return withCollection(state, 'days', (list) => [...list.filter((d) => d.date !== date), day]);
     }

@@ -6,6 +6,11 @@
   gap: 10px;
 }
 
+.revenue-total__formula {
+  font: 500 14px var(--f-mono);
+  color: var(--muted);
+}
+
 .revenue-total__label {
   font-size: 12px;
   color: var(--muted);

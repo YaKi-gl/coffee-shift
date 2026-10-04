@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { revenueOf } from '../../services/metrics.js';
+import { revenueOf, salesOf } from '../../services/metrics.js';
 import { formatDay } from '../../utils/date.js';
 import { formatRub } from '../../utils/format.js';
 import { EmptyState } from '../ui/EmptyState.jsx';
@@ -21,14 +21,15 @@ export function ChartLegend() {
 }
 
 /**
- * Столбчатый график выручки (SVG): безнал снизу, наличные сверху.
+ * Столбчатый график продаж (SVG): безнал снизу, наличные сверху.
+ * В подсказке — выручка за вычетом возвратов.
  * Столбцы «вырастают» от оси по очереди. Старые записи без разбивки — одним цветом.
  */
 export function RevenueChart({ days }) {
   if (!days.length) return <EmptyState>Добавьте выручку на вкладке «Выручка» — здесь появится график.</EmptyState>;
 
   const { width, height, left, bottom, top, right } = SIZE;
-  const max = Math.ceil(Math.max(...days.map(revenueOf)) / STEP) * STEP || STEP;
+  const max = Math.ceil(Math.max(...days.map(salesOf)) / STEP) * STEP || STEP;
   const barWidth = (width - left - right) / days.length;
   const baseline = height - bottom;
   const y = (value) => top + (baseline - top) * (1 - value / max);
@@ -49,7 +50,8 @@ export function RevenueChart({ days }) {
         {days.map((day, i) => {
           const x = left + i * barWidth + 3;
           const w = barWidth - 6;
-          const total = revenueOf(day);
+          const total = salesOf(day);
+          const refunds = Number(day.refundAmount) || 0;
           const hasSplit = day.card !== undefined || day.cash !== undefined;
           const card = hasSplit ? Number(day.card) || 0 : total;
           const transition = { delay: i * 0.035, type: 'spring', stiffness: 140, damping: 18 };
@@ -57,8 +59,9 @@ export function RevenueChart({ days }) {
           return (
             <g key={day.date}>
               <title>
-                {formatDay(day.date)}: {formatRub(total)}
-                {hasSplit ? ` (безнал ${formatRub(card)}, нал ${formatRub(total - card)})` : ''}
+                {formatDay(day.date)}: выручка {formatRub(revenueOf(day))}
+                {hasSplit ? ` · продажи: безнал ${formatRub(card)}, нал ${formatRub(total - card)}` : ''}
+                {refunds ? ` · возвраты −${formatRub(refunds)}` : ''}
               </title>
               {/* Нижний сегмент — безнал */}
               <motion.rect

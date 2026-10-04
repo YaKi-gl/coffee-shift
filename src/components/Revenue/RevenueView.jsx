@@ -13,11 +13,18 @@ import './Revenue.css';
 
 const money = (value) => (value === undefined ? '—' : formatRub(Number(value) || 0));
 
-/** Итог дня считается на лету, пока вводятся наличные и безнал. */
-function LiveTotal({ cash, card }) {
-  const total = (Number(cash) || 0) + (Number(card) || 0);
+/** Итог дня считается на лету: продажи − возвраты = выручка. */
+function LiveTotal({ cash, card, refundAmount }) {
+  const sales = (Number(cash) || 0) + (Number(card) || 0);
+  const refunds = Number(refundAmount) || 0;
+  const total = sales - refunds;
   return (
     <div className="revenue-total" aria-live="polite">
+      {refunds > 0 && (
+        <span className="revenue-total__formula">
+          {formatRub(sales)} − {formatRub(refunds)} =
+        </span>
+      )}
       <span className="revenue-total__label">Выручка за день</span>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.b key={total} className="revenue-total__value" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }}>
@@ -31,13 +38,13 @@ function LiveTotal({ cash, card }) {
 /** Вкладка «Выручка»: наличные, безнал, чеки и возвраты за день. */
 export function RevenueView({ days, onSave, onRemove }) {
   const rows = [...days].sort((a, b) => b.date.localeCompare(a.date));
-  const [draft, setDraft] = useState({ cash: '', card: '' });
+  const [draft, setDraft] = useState({ cash: '', card: '', refundAmount: '' });
 
   const track = (field) => (e) => setDraft((d) => ({ ...d, [field]: e.target.value }));
 
   function handleSave(values) {
     onSave(values);
-    setDraft({ cash: '', card: '' });
+    setDraft({ cash: '', card: '', refundAmount: '' });
   }
 
   return (
@@ -59,10 +66,13 @@ export function RevenueView({ days, onSave, onRemove }) {
           <Field label="Чеков возврата">
             <input type="number" id="rev-refunds" name="refunds" min="0" defaultValue="0" />
           </Field>
+          <Field label="Сумма возвратов, ₽">
+            <input type="number" id="rev-refund-amount" name="refundAmount" min="0" defaultValue="0" onChange={track('refundAmount')} />
+          </Field>
         </EntryForm>
         <div className="row row--between">
-          <p className="muted">Повторная запись за ту же дату заменит прежнюю.</p>
-          <LiveTotal cash={draft.cash} card={draft.card} />
+          <p className="muted">Наличные и безнал — суммы продаж; возвраты вычитаются из выручки. Повторная запись за ту же дату заменит прежнюю.</p>
+          <LiveTotal cash={draft.cash} card={draft.card} refundAmount={draft.refundAmount} />
         </div>
 
         {rows.length ? (
@@ -73,9 +83,9 @@ export function RevenueView({ days, onSave, onRemove }) {
                   <th>Дата</th>
                   <th className="num">Наличные</th>
                   <th className="num">Безнал</th>
-                  <th className="num">Выручка</th>
                   <th className="num">Чеков</th>
-                  <th className="num">Возвратов</th>
+                  <th className="num">Возвраты</th>
+                  <th className="num">Выручка</th>
                   <th className="num">Средний чек</th>
                   <th />
                 </tr>
@@ -83,15 +93,17 @@ export function RevenueView({ days, onSave, onRemove }) {
               <tbody>
                 <AnimatePresence initial={false}>
                   {rows.map((d) => (
-                    <motion.tr key={`${d.id}-${revenueOf(d)}-${d.checks}-${d.refunds}`} {...rowMotion}>
+                    <motion.tr key={`${d.id}-${revenueOf(d)}-${d.checks}-${d.refunds}-${d.refundAmount}`} {...rowMotion}>
                       <td>
                         {formatWeekday(d.date)}, {formatDay(d.date)} {d.example && <span className="tag">пример</span>}
                       </td>
                       <td className="num">{money(d.cash)}</td>
                       <td className="num">{money(d.card)}</td>
-                      <td className="num revenue-cell">{formatRub(revenueOf(d))}</td>
                       <td className="num">{d.checks || 0}</td>
-                      <td className={`num ${d.refunds ? 'refund-cell' : ''}`}>{d.refunds ?? 0}</td>
+                      <td className={`num ${d.refunds || d.refundAmount ? 'refund-cell' : ''}`}>
+                        {d.refunds || d.refundAmount ? `${d.refunds ?? 0} шт · −${formatRub(Number(d.refundAmount) || 0)}` : '—'}
+                      </td>
+                      <td className="num revenue-cell">{formatRub(revenueOf(d))}</td>
                       <td className="num">{d.checks ? formatRub(averageCheck([d])) : '—'}</td>
                       <td>
                         <RemoveButton onClick={() => onRemove('days', d.id)} />

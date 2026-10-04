@@ -5,6 +5,7 @@ import {
   paymentSplit,
   refundStats,
   revenueOf,
+  salesOf,
   inPeriod,
   percentChange,
   shiftsInWeek,
@@ -104,8 +105,18 @@ describe('наличные, безнал и возвраты', () => {
     expect(paymentSplit(days)).toEqual({ cash: 25000, card: 55000, cardShare: 68.75 });
   });
 
-  it('refundStats считает возвраты и их долю от чеков', () => {
-    expect(refundStats(days)).toEqual({ refunds: 3, refundRate: 1.5 });
+  it('refundStats считает возвраты: чеки, сумму и доли', () => {
+    const withAmounts = [
+      { ...days[0], refundAmount: 600 },
+      { ...days[1], refundAmount: 200 },
+    ];
+    expect(refundStats(withAmounts)).toEqual({ refunds: 3, amount: 800, refundRate: 1.5, amountRate: 1 });
+  });
+
+  it('выручка = продажи − сумма возвратов', () => {
+    const day = { cash: 10000, card: 30000, refundAmount: 500 };
+    expect(salesOf(day)).toBe(40000);
+    expect(revenueOf(day)).toBe(39500);
   });
 
   it('средний чек считается от суммы наличных и безнала', () => {

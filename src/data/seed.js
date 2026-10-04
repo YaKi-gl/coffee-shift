@@ -27,7 +27,8 @@ function seedRevenue(today) {
     const card = Math.round((revenue * (62 + ((daysAgo * 37) % 11))) / 100);
     const cash = revenue - card;
     const refunds = (daysAgo * 5) % 3;
-    return { id: `day-${date}`, date, cash, card, revenue, checks, refunds, example: true };
+    const refundAmount = refunds * (240 + ((daysAgo * 53) % 120));
+    return { id: `day-${date}`, date, cash, card, revenue: revenue - refundAmount, checks, refunds, refundAmount, example: true };
   });
 }
 

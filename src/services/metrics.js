@@ -10,23 +10,28 @@ const sum = (items, key) => items.reduce((total, item) => total + (Number(item[k
 export const inPeriod = (items, to, days) => items.filter((x) => x.date > addDays(to, -days) && x.date <= to);
 
 /**
- * Выручка за день = наличные + безнал.
+ * Продажи за день = наличные + безнал (до вычета возвратов).
  * Старые записи без разбивки хранят только общую сумму в поле revenue.
  */
-export function revenueOf(day) {
+export function salesOf(day) {
   const hasSplit = day.cash !== undefined || day.card !== undefined;
   return hasSplit ? (Number(day.cash) || 0) + (Number(day.card) || 0) : Number(day.revenue) || 0;
 }
 
+/** Выручка за день = продажи − сумма возвратов. */
+export const revenueOf = (day) => salesOf(day) - (Number(day.refundAmount) || 0);
+
 const totalRevenue = (days) => days.reduce((total, d) => total + revenueOf(d), 0);
+const totalSales = (days) => days.reduce((total, d) => total + salesOf(d), 0);
 
 export function averageRevenue(days) {
   return days.length ? totalRevenue(days) / days.length : 0;
 }
 
+/** Средний чек = продажи / чеки продажи (возвраты учитываются отдельно). */
 export function averageCheck(days) {
   const checks = sum(days, 'checks');
-  return checks ? totalRevenue(days) / checks : 0;
+  return checks ? totalSales(days) / checks : 0;
 }
 
 /** Структура оплат: суммы наличных и безнала и доля безнала в %. */
@@ -37,11 +42,18 @@ export function paymentSplit(days) {
   return { cash, card, cardShare: total ? (card / total) * 100 : 0 };
 }
 
-/** Количество чеков возврата и их доля от всех чеков, %. */
+/** Возвраты: количество чеков, сумма, доля от чеков и доля от продаж, %. */
 export function refundStats(days) {
   const refunds = sum(days, 'refunds');
+  const amount = sum(days, 'refundAmount');
   const checks = sum(days, 'checks');
-  return { refunds, refundRate: checks ? (refunds / checks) * 100 : 0 };
+  const sales = totalSales(days);
+  return {
+    refunds,
+    amount,
+    refundRate: checks ? (refunds / checks) * 100 : 0,
+    amountRate: sales ? (amount / sales) * 100 : 0,
+  };
 }
 
 /** Изменение в процентах; null, если сравнивать не с чем. */
