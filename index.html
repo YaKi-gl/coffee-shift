@@ -1,39 +1,19 @@
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Кофейная Смена</title>
-  <meta name="description" content="Смены бариста, списания и выручка кофейни в одном месте.">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Manrope:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
-
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/components.css">
-
-  <script type="module" src="js/main.js"></script>
-</head>
-<body>
-  <div class="app">
-    <header class="app-header">
-      <div>
-        <h1>Кофейная Смена</h1>
-        <p class="app-header__subtitle">Смены бариста, списания и выручка точки в одном месте</p>
-      </div>
-      <span class="storage-badge" id="storage-badge"></span>
-    </header>
-
-    <nav class="tabs" role="tablist">
-      <button class="tabs__tab" role="tab" data-tab="overview" aria-selected="true">Обзор</button>
-      <button class="tabs__tab" role="tab" data-tab="shifts" aria-selected="false">Смены</button>
-      <button class="tabs__tab" role="tab" data-tab="writeoffs" aria-selected="false">Списания</button>
-      <button class="tabs__tab" role="tab" data-tab="revenue" aria-selected="false">Выручка</button>
-    </nav>
-
-    <main id="view"></main>
-  </div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Смены бариста, списания и выручка кофейни в одном месте." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Manrope:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap"
+    />
+    <title>Кофейная Смена</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

@@ -1,0 +1,52 @@
+/* Общие элементы: панель, форма ввода, пустое состояние, метка «пример» */
+
+.panel {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+}
+
+.panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.entry-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.entry-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 24px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+.tag {
+  font: 600 11px var(--f-mono);
+  background: var(--crema-soft);
+  color: var(--crema);
+  padding: 2px 6px;
+  border-radius: 4px;
+}

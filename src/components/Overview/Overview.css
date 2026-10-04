@@ -1,0 +1,93 @@
+/* Вкладка «Обзор» */
+
+.overview {
+  display: grid;
+}
+
+/* --- KPI --- */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.kpi {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.kpi__label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.kpi__value {
+  display: block;
+  font: 600 24px var(--f-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi__hint {
+  color: var(--muted);
+}
+
+.kpi__hint--up   { color: var(--ok); }
+.kpi__hint--down { color: var(--bad); }
+
+/* --- График выручки --- */
+.chart {
+  overflow-x: auto;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  min-width: 480px;
+  height: auto;
+}
+
+.chart text {
+  fill: var(--muted);
+  font: 11px var(--f-mono);
+}
+
+.chart__grid  { stroke: var(--line); }
+.chart__bar   { fill: var(--crema); opacity: 0.75; }
+.chart__bar--last { fill: var(--accent); opacity: 1; }
+
+/* --- Списания по причинам --- */
+.reasons {
+  display: grid;
+  gap: 8px;
+}
+
+.reason {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  font-size: 14px;
+}
+
+.reason__sum {
+  font: 600 13px var(--f-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.reason__bar {
+  grid-column: 1 / -1;
+  height: 8px;
+  background: var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.reason__fill {
+  display: block;
+  height: 100%;
+  background: var(--crema);
+}
+

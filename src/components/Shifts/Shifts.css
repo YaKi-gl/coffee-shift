@@ -1,0 +1,55 @@
+/* Вкладка «Смены» */
+
+/* --- Недельный график смен --- */
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.day {
+  min-height: 120px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+
+.day--today {
+  border-color: var(--accent);
+}
+
+.day__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.shift {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  background: var(--accent-soft);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.shift__time {
+  font: 12px var(--f-mono);
+  color: var(--muted);
+}
+
+
+.week-viewport {
+  overflow: hidden;
+}
+
+.week-range {
+  min-width: 120px;
+  text-align: center;
+}
